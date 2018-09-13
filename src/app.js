@@ -7,17 +7,15 @@ const
 
 const config = require(path.resolve(__dirname, '../config'));
 
-const server = restify.createServer();
-
 const cors = corsMiddleware({
     preflightMaxAge: 5,
     origins: ['*'],
-    allowHeaders: ['*'],
-    exposeHeaders: ['*'],
-  })
+})
+
+const server = restify.createServer();
   
-  server.pre(cors.preflight)
-  server.use(cors.actual)
+server.pre(cors.preflight)
+server.use(cors.actual)
 
 // Se o dia do mês, termina com:
 
