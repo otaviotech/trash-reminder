@@ -8,8 +8,8 @@ const
 const config = require(path.resolve(__dirname, '../config'));
 
 const cors = corsMiddleware({
-    preflightMaxAge: 5,
     origins: ['*'],
+    exposeHeaders: [],
 })
 
 const server = restify.createServer();
