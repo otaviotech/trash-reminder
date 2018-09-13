@@ -2,11 +2,22 @@ const
     path = require('path')
     fs = require('fs')
     moment = require('moment')
-    restify = require('restify');
+    restify = require('restify')
+    corsMiddleware = require('restify-cors-middleware');
 
 const config = require(path.resolve(__dirname, '../config'));
 
 const server = restify.createServer();
+
+const cors = corsMiddleware({
+    preflightMaxAge: 5,
+    origins: ['*'],
+    allowHeaders: ['*'],
+    exposeHeaders: ['*'],
+  })
+  
+  server.pre(cors.preflight)
+  server.use(cors.actual)
 
 // Se o dia do mês, termina com:
 
