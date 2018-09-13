@@ -18,7 +18,7 @@ server.use(cors.actual)
 
 // Se o dia do mês, termina com:
 
-const queue = ['Otavio', 'Thiago', 'Christian', 'Leonardo', 'Marcos', 'Felipe', 'Renata'];
+const queue = ['Otávio', 'Thiago', 'Christian', 'Leonardo', 'Marcos', 'Felipe', 'Renata'];
 
 server.post('/', (req, res, next) => {
     const todayIsSaturdayOrSunday = [0,6].includes(moment().day());
@@ -47,7 +47,7 @@ server.post('/', (req, res, next) => {
         if (dia === yesterday) {
             res.send(200, {
                 response_type: 'in_channel',
-                text: `Quem tira o lixo hoje é ${nextPerson}!`
+                text: `Quem tira o lixo hoje é... ${nextPerson}!`
             });
             return;
         }
@@ -59,7 +59,7 @@ server.post('/', (req, res, next) => {
 
             res.send(200, {
                 response_type: 'in_channel',
-                text: `Quem tira o lixo hoje é ${nextPerson}!`
+                text: `Quem tira o lixo hoje é... ${nextPerson}!`
             });
         }
     });
