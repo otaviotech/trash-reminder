@@ -57,6 +57,6 @@ server.post('/', (req, res, next) => {
     });
 });
 
-server.listen(process.env.port, () => {
-    console.log(`${config.appName} listening on port ${config.port}`);
+server.listen(process.env.PORT, () => {
+    console.log(`${config.appName} listening on port ${config.PORT}`);
 });
