@@ -9,8 +9,7 @@ const config = require(path.resolve(__dirname, '../config'));
 
 const cors = corsMiddleware({
     origins: ['*'],
-    exposeHeaders: [],
-})
+});
 
 const server = restify.createServer();
   
