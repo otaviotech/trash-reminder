@@ -24,8 +24,8 @@ server.post('/', (req, res) => {
 
     if (!TrashReminder.IsTrashRemovingDay(today)) {
         res.send(200, {
-            response_type: 'in_channel',
-            text: TrashReminder.GetNotRemovingDayMessage(today),
+          response_type: 'in_channel',
+          text: TrashReminder.GetNotRemovingDayMessage(today),
         });
         return;
     }
@@ -35,8 +35,10 @@ server.post('/', (req, res) => {
     const lastTrashRemove = TrashReminder.GetLastTrashRemove(path.resolve(__dirname, 'ultimaPessoa.txt'));
     const actualTrashRemove = TrashReminder.GetActualTrashRemove(lastTrashRemove, queue);
 
-
-    res.send(200, actualTrashRemove);
+    res.send(200, {
+      response_type: 'in_channel',
+      text: `Quem tira o lixo hoje é... ${actualTrashRemove.who}`,
+    });
 });
 
 server.listen(process.env.PORT || config.port, () => {
