@@ -37,7 +37,7 @@ server.post('/', (req, res) => {
 
     res.send(200, {
       response_type: 'in_channel',
-      text: `Quem tira o lixo hoje é... ${actualTrashRemove.who}`,
+      text: `Quem tira o lixo hoje é... ${actualTrashRemove.who}!`,
     });
 });
 
