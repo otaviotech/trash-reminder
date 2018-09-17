@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node ./src/app.js",
-    "dev": "nodemon ./src/app.js"
+    "dev": "nodemon ./src/app.js",
+    "test": "jest"
   },
   "dependencies": {
     "lodash": "^4.17.10",
@@ -13,5 +14,9 @@
     "nodemon": "^1.18.4",
     "restify": "^7.2.1",
     "restify-cors-middleware": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.2",
+    "jest": "^23.6.0"
   }
 }

@@ -3,7 +3,8 @@ const
     fs = require('fs')
     moment = require('moment')
     restify = require('restify')
-    corsMiddleware = require('restify-cors-middleware');
+    corsMiddleware = require('restify-cors-middleware')
+    TrashReminder = require('./trashReminder');
 
 const config = require(path.resolve(__dirname, '../config'));
 
@@ -12,59 +13,32 @@ const cors = corsMiddleware({
 });
 
 const server = restify.createServer();
-  
+
 server.pre(cors.preflight)
 server.use(cors.actual)
 
-// Se o dia do mês, termina com:
+const queue = ['Christian', 'Felipe', 'Thiago', 'Otávio', 'Renata', 'Marcos', 'Leonardo'];
 
-const queue = ['Otávio', 'Thiago', 'Christian', 'Leonardo', 'Marcos', 'Felipe', 'Renata'];
+server.post('/', (req, res) => {
+    const today = moment().format('YYYY-MM-DD');
 
-server.post('/', (req, res, next) => {
-    const todayIsSaturdayOrSunday = [0,6].includes(moment().day());
-    const yesterday = moment().subtract(1, 'days').format('YYYY-MM-DD');
-    const beforeYesterday = moment().subtract(2, 'days').format('YYYY-MM-DD');
-    // const today = moment().format('YYYY-MM-DD');
-
-    if (todayIsSaturdayOrSunday) {
+    if (!TrashReminder.IsTrashRemovingDay(today)) {
         res.send(200, {
             response_type: 'in_channel',
-            text: `Relaxa! Hoje é ${moment().day() === 6 ? 'sábado' : 'domingo'}!`
+            text: TrashReminder.GetNotRemovingDayMessage(today),
         });
         return;
     }
-    
-    fs.readFile(path.resolve(__dirname, 'ultimaPessoa.txt'), 'utf8', (err, contents) => {
-        if (err || !contents) return console.log('Erro 1!');
 
-        const splited = contents.split('|');
-        
-        const ultimaPessoa = splited[0];
-        const dia = moment(splited[1], 'YYYY-MM-DD').format('YYYY-MM-DD');
+    TrashReminder.SetLastTrashRemove(path.resolve(__dirname, 'ultimaPessoa.txt'), queue, today);
 
-        let nextPerson = queue[queue.findIndex(i => i === ultimaPessoa) + 1];
+    const lastTrashRemove = TrashReminder.GetLastTrashRemove(path.resolve(__dirname, 'ultimaPessoa.txt'));
+    const actualTrashRemove = TrashReminder.GetActualTrashRemove(lastTrashRemove, queue);
 
-        if (dia === yesterday) {
-            res.send(200, {
-                response_type: 'in_channel',
-                text: `Quem tira o lixo hoje é... ${nextPerson}!`
-            });
-            return;
-        }
 
-        if (dia === beforeYesterday) {
-            const log = `${nextPerson}|${yesterday}`;
-
-            fs.writeFile(path.resolve(__dirname, 'ultimaPessoa.txt'), log);
-
-            res.send(200, {
-                response_type: 'in_channel',
-                text: `Quem tira o lixo hoje é... ${nextPerson}!`
-            });
-        }
-    });
+    res.send(200, actualTrashRemove);
 });
 
-server.listen(process.env.PORT, () => {
-    console.log(`${config.appName} listening on port ${config.PORT}`);
+server.listen(process.env.PORT || config.port, () => {
+    console.log(`${config.appName} listening on port ${process.env.PORT || config.port}`);
 });
