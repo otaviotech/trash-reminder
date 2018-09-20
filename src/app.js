@@ -38,6 +38,11 @@ server.post('/', (req, res) => {
     });
 });
 
+server.get('/wakemydyno.txt', restify.plugins.serveStatic({
+  directory: path.resolve(__dirname, '../'),
+  file: 'wakemydyno.txt'
+}));
+
 server.listen(process.env.PORT || config.port, () => {
     console.log(`${config.appName} listening on port ${process.env.PORT || config.port}`);
 });
