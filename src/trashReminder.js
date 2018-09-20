@@ -133,6 +133,24 @@ const TrashReminder = {
     return { who, when };
   },
 
+  /**
+   * @function GetTrashRemoveByDate
+   * @description Retorna quem é a pessoa que remove o lixo no dia deteminado.
+   * @param {Array | string} removalList A lista contendo as pessoas que retiram o lixo.
+   * Objeto: { who: 'João'}
+   * @param {Date} date Data de referência.
+   * Objeto: { who: 'João'}
+   * @returns {Object} Um objeto que contém as informações de quem retira o lixo no dia determinado.
+   */
+  GetTrashRemoveByDate(removalList, date) {
+    const dateStart = moment('2018-09-17');
+
+    const index = (this.GetTotalWeekDays(dateStart, date) - 1) % removalList.length;
+    let who = removalList[index];
+
+    return { who };
+  },
+
   SetLastTrashRemove(filePath, removalList, currentDate){
     const lastTrashRemove = getParsedInfo(filePath);
     const lastDate = moment(lastTrashRemove.when, 'YYYY-MM-DD');

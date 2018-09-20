@@ -104,6 +104,33 @@ describe('TrashReminder', () => {
     });
   });
 
+  describe('GetTrashRemoveByDate', () => {
+    const mockTrashRemoversList = ['Maria', 'João', 'Pedro', 'Madalena'];
+    it('Deve informar a primeira pessoa (Maria).', () => {
+      const expectedResult = { who: 'Maria' };
+      const trashRemove = TrashReminder.GetTrashRemoveByDate(mockTrashRemoversList, '2018-09-17');
+      expect(trashRemove).toEqual(expectedResult);
+    });
+
+    it('Deve informar a segunda pessoa (João).', () => {
+      const expectedResult = { who: 'João' };
+      const trashRemove = TrashReminder.GetTrashRemoveByDate(mockTrashRemoversList, '2018-09-18');
+      expect(trashRemove).toEqual(expectedResult);
+    });
+
+    it('Deve informar a quinta pessoa (Maria).', () => {
+      const expectedResult = { who: 'Maria' };
+      const trashRemove = TrashReminder.GetTrashRemoveByDate(mockTrashRemoversList, '2018-09-21');
+      expect(trashRemove).toEqual(expectedResult);
+    });
+
+    it('Deve informar a sexta pessoa (João).', () => {
+      const expectedResult = { who: 'João' };
+      const trashRemove = TrashReminder.GetTrashRemoveByDate(mockTrashRemoversList, '2018-09-24');
+      expect(trashRemove).toEqual(expectedResult);
+    });
+  });
+
   describe('SetLastTrashRemove', () => {
     describe('Seta ultima coleta realizada', ()=> {
       let fsMock = require('fs');
