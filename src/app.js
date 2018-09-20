@@ -30,10 +30,7 @@ server.post('/', (req, res) => {
         return;
     }
 
-    TrashReminder.SetLastTrashRemove(path.resolve(__dirname, 'ultimaPessoa.txt'), queue, today);
-
-    const lastTrashRemove = TrashReminder.GetLastTrashRemove(path.resolve(__dirname, 'ultimaPessoa.txt'));
-    const actualTrashRemove = TrashReminder.GetActualTrashRemove(lastTrashRemove, queue);
+    const actualTrashRemove = TrashReminder.GetTrashRemoveByDate(queue, today);
 
     res.send(200, {
       response_type: 'in_channel',
