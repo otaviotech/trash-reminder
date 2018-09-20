@@ -39,6 +39,43 @@ describe('TrashReminder', () => {
     });
   });
 
+  describe('GetTotalWeekDays', () => {
+    it('Start maior que End', () => {
+      const total = TrashReminder.GetTotalWeekDays('2018-09-25', '2018-09-19');
+      expect(total).toBe(0);
+    });
+
+    it('Start e End iguais', () => {
+      const total = TrashReminder.GetTotalWeekDays('2018-09-25', '2018-09-25');
+      expect(total).toBe(1);
+    });
+
+    it('Start e End durante a semana (intervalo maior que 1 semana)', () => {
+      const total = TrashReminder.GetTotalWeekDays('2018-09-17', '2018-09-27');
+      expect(total).toBe(9);
+    });
+
+    it('Start durante a semana e End durante final de semana  (intervalo maior que 1 semana)', () => {
+      const total = TrashReminder.GetTotalWeekDays('2018-09-17', '2018-09-29');
+      expect(total).toBe(10);
+    });
+
+    it('Start durante final de semana e End durante semana  (intervalo maior que 1 semana)', () => {
+      const total = TrashReminder.GetTotalWeekDays('2018-09-16', '2018-09-27');
+      expect(total).toBe(9);
+    });
+
+    it('Start durante final de semana e End durante final de semana  (intervalo maior que 1 semana)', () => {
+      const total = TrashReminder.GetTotalWeekDays('2018-09-16', '2018-09-29');
+      expect(total).toBe(10);
+    });
+
+    it('Start durante final de semana e End durante final de semana  (intervalo maior que 1 semana)', () => {
+      const total = TrashReminder.GetTotalWeekDays('2018-09-15', '2018-09-29');
+      expect(total).toBe(10);
+    });
+  });
+
   describe('GetLastTrashRemove', () => {
     const mockLastTrashRemove = { who: 'João', when: '2018-01-01' };
     const lastTrashRemoveFilePath = 'ultimaPessoa.txt';
