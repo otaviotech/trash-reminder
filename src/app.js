@@ -17,7 +17,7 @@ const server = restify.createServer();
 server.pre(cors.preflight)
 server.use(cors.actual)
 
-const queue = ['Christian', 'Felipe', 'Thiago', 'Otávio', 'Marcos',];
+const queue = ['Christian', 'Felipe', 'Thiago', 'Otávio', 'Marcos'];
 
 server.post('/', (req, res) => {
     const today = moment().format('YYYY-MM-DD');
