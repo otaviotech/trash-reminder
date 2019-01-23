@@ -6,10 +6,13 @@
   "scripts": {
     "start": "node ./src/app.js",
     "dev": "nodemon ./src/app.js",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "lodash": "^4.17.10",
+    "lowdb": "^1.0.0",
     "moment": "^2.22.2",
     "nodemon": "^1.18.4",
     "restify": "^7.2.1",
