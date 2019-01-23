@@ -42,5 +42,22 @@ describe('TrashRemovalService', () => {
           done();
         });
     });
+
+    it('Deve resolver e retornar true caso seja dia da semana e não seja feriado.', (done) => {
+      trashRemovalService = createTrashRemovalService({
+        calendarioService: {
+          isHoliday: () => Promise.resolve({
+            result: false,
+            details: undefined,
+          }),
+        },
+      });
+
+      trashRemovalService.isTrashRemovingDay(someMonday)
+        .then((isTrashRemovingDay) => {
+          expect(isTrashRemovingDay).toBeTruthy();
+          done();
+        });
+    });
   });
 });
