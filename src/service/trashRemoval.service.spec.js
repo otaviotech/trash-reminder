@@ -60,4 +60,36 @@ describe('TrashRemovalService', () => {
         });
     });
   });
+
+  describe('GetRemover', () => {
+    beforeAll(() => {
+      trashRemovalService = createTrashRemovalService({
+        calendarioService: {
+          isHoliday: () => Promise.resolve({
+            result: false,
+            details: undefined,
+          }),
+        },
+        trashScheduleRepository: {
+          getLastRemoval: () => Promise.resolve({
+            date: '2019-01-02', collaboratorID: 4,
+          }),
+        },
+        collaboratorRepository: {
+          get: () => Promise.resolve({ id: 4, name: 'Otávio', slackUserID: 'UABE2LK42', message: 'Custom message' }),
+        },
+      });
+    });
+
+    it('deve resolver e retornar a ultima coleta caso a data seja a mesma da ultima coleta.', (done) => {
+      trashRemovalService.getRemover('2019-01-02')
+        .then((todaysRemover) => {
+          expect(todaysRemover.id).toBe(4);
+          expect(todaysRemover.name).toBe('Otávio');
+          expect(todaysRemover.slackUserID).toBe('UABE2LK42');
+          expect(todaysRemover.message).toBe('Custom message');
+          done();
+        });
+    });
+  });
 });

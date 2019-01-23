@@ -8,8 +8,8 @@ const createCollaboratorRepository = function(getDBConnection) {
     get(id) {
       return getDBConnection()
         .then((db) => {
-          const lastRemoval = db.get('collaborators').find({ id }).value();
-          return Promise.resolve(lastRemoval);
+          const collaborator = db.get('collaborators').find({ id }).value();
+          return Promise.resolve(collaborator);
         })
         .catch(err => Promise.reject(err))
     },

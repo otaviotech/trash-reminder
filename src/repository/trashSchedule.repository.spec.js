@@ -8,7 +8,7 @@ describe('TrashScheduleRepository', () => {
       trashScheduleRepository = createTrashScheduleRepository(() => Promise.resolve({
         get: () => ({
           value: () => ({
-              personID: 1,
+              collaboratorID: 1,
               date: '2019-01-23',
           }),
         }),
@@ -19,7 +19,7 @@ describe('TrashScheduleRepository', () => {
         trashScheduleRepository.getLastRemoval()
           .then((lastSchedule) => {
             expect(typeof lastSchedule).toBe('object');
-            expect(lastSchedule.personID).toBe(1);
+            expect(lastSchedule.collaboratorID).toBe(1);
             expect(lastSchedule.date).toBe('2019-01-23');
             done();
           });
