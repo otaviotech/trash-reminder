@@ -1,0 +1,13 @@
+{
+  "collaborators": [
+    { "id": 1, "name": "Christian", "slackUserID": "UB9MMU9FT", "message": "" },
+    { "id": 2, "name": "Felipe", "slackUserID": "U1K0RHVV4", "message": "" },
+    { "id": 3, "name": "Thiago", "slackUserID": "U9RLPU3NE", "message": "" },
+    { "id": 4, "name": "Otávio", "slackUserID": "UABE2LK42", "message": "" },
+    { "id": 5, "name": "Marcos", "slackUserID": "U9REQT6L8", "message": "" }
+  ],
+  "lastRemoval": {
+    "collaboratorID": 1,
+    "date": "2019-01-23"
+  }
+}
