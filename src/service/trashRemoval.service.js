@@ -3,11 +3,13 @@ const { bauruIBGECityCode } = require('../constants');
 const createCalendarioService = require('./calendario.service');
 const createTrashScheduleRepository = require('../repository/trashSchedule.repository');
 const createCollaboratorRepository = require('../repository/collaborator.repository');
+const createCollaboratorService = require('./collaborator.service');
 
 function createTrashRemovalService ({
   calendarioService = createCalendarioService(),
   trashScheduleRepository = createTrashScheduleRepository(),
   collaboratorRepository = createCollaboratorRepository(),
+  collaboratorService = createCollaboratorService(),
 } = {}) {
   return {
     /**
