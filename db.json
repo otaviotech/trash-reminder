@@ -32,7 +32,8 @@
     }
   ],
   "lastRemoval": {
-    "collaboratorID": 1,
-    "date": "2019-01-23"
-  }
+    "date": "2019-01-24",
+    "collaboratorID": 2
+  },
+  "id": 1
 }
