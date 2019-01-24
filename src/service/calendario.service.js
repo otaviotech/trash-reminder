@@ -1,7 +1,8 @@
+const axios = require('axios');
 const { calendarioAPIBaseURL } = require('../constants');
 const moment = require('moment');
 
-function createCalendarioService (httpClient) {
+function createCalendarioService (httpClient = axios) {
   return {
     /**
      * Busca os feriados para um ano.
