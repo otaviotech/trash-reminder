@@ -1,11 +1,14 @@
 const moment = require('moment');
 const { bauruIBGECityCode } = require('../constants');
+const createCalendarioService = require('./calendario.service');
+const createTrashScheduleRepository = require('../repository/trashSchedule.repository');
+const createCollaboratorRepository = require('../repository/collaborator.repository');
 
 function createTrashRemovalService ({
-  calendarioService,
-  trashScheduleRepository,
-  collaboratorRepository,
-}) {
+  calendarioService = createCalendarioService(),
+  trashScheduleRepository = createTrashScheduleRepository(),
+  collaboratorRepository = createCollaboratorRepository(),
+} = {}) {
   return {
     /**
      * Verifica se é necessário tirar o lixo na data passada.
@@ -47,6 +50,17 @@ function createTrashRemovalService ({
                   .catch(err => Promise.reject(err));
               }
 
+              return collaboratorService.getNextQueuedCollaborator(lastRemoval.collaboratorID)
+                .then((nextQueuedCollaborator) => {
+                  // Change, but async, no confirmation needed.
+                  trashScheduleRepository.setLastRemoval({
+                    date,
+                    collaboratorID: nextQueuedCollaborator.id,
+                  }).catch(console.error);
+
+                  return nextQueuedCollaborator;
+                })
+                .catch(err => Promise.reject(err));
 
             })
             .catch(err => Promise.reject(err));
@@ -56,9 +70,35 @@ function createTrashRemovalService ({
           return Promise.reject(err);
         });
     },
+
+    /**
+     * Obtém a mensagem formatada citando o colaborador.
+     * @param {object} collaborator O colaborador.
+     * @return {string}
+     */
+    getRemoveMessage(collaborator) {
+      const message = `Quem tira o lixo hoje é... <@${collaborator.slackUserID}>`;
+      return message;
+    },
+
+    /**
+     * Retorna uma mensagem dizendo que não é necessário remover o lixo.
+     * @param {string} date A data em que não é necessário remover o lixo.
+     * O formato deve ser: YYYY-MM-DD
+     * @returns {string} A mensagem dizendo que não é necessário remover o lixo.
+     */
+    getNotRemovingDayMessage(date) {
+      const weekDay = moment(date, 'YYYY-MM-DD').day();
+
+      let dayStr;
+
+      if (weekDay === 0) dayStr = 'domingo';
+      if (weekDay === 6) dayStr = 'sábado';
+      if (![0, 6].includes(weekDay)) dayStr = 'feriado';
+
+      return `Relaxa! Hoje é ${dayStr}!`;
+    },
   };
 };
 
 module.exports = createTrashRemovalService;
-
-

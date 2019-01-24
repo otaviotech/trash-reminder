@@ -1,4 +1,6 @@
-const createTrashScheduleRepository = function(getDBConnection) {
+const db = require('./db');
+
+const createTrashScheduleRepository = function(getDBConnection = db) {
   return {
     /**
      * Busca a ultima coleta de lixo.

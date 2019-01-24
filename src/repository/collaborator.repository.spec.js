@@ -28,4 +28,25 @@ describe('CollaboratorRepository', () => {
           });
     });
   });
+
+  describe('GetCollaboratorsCount', () => {
+    beforeEach(() => {
+      collaboratorRepository = createCollaboratorRepository(() => Promise.resolve({
+        get: () => ({
+          size: () => ({
+            value: () => 6,
+          })
+        }),
+      }));
+    });
+
+    it('Deve buscar a quantidade de colaboradores no banco de dados.', (done) => {
+        collaboratorRepository.getCollaboratorsCount()
+          .then((count) => {
+            expect(typeof count).toBe('number');
+            expect(count).toBe(6);
+            done();
+          });
+    });
+  });
 });

@@ -92,4 +92,28 @@ describe('TrashRemovalService', () => {
         });
     });
   });
+
+  describe('GetNextRemovingDay', () => {
+
+    const calendarioServiceMock = {
+      isHoliday: () => Promise.resolve({
+        result: false,
+        details: undefined,
+      }),
+    };
+
+    beforeAll(() => {
+      trashRemovalService = createTrashRemovalService({
+        calendarioService: calendarioServiceMock,
+        trashScheduleRepository: {
+          getLastRemoval: () => Promise.resolve({
+            date: '2019-01-02', collaboratorID: 4,
+          }),
+        },
+        collaboratorRepository: {
+          get: () => Promise.resolve({ id: 4, name: 'Otávio', slackUserID: 'UABE2LK42', message: 'Custom message' }),
+        },
+      });
+    });
+  });
 });
