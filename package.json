@@ -10,10 +10,8 @@
     "test:watch": "jest --no-cache --watch"
   },
   "dependencies": {
-    "@types/firebase": "^3.2.1",
     "axios": "^0.18.0",
     "firebase": "^5.8.0",
-    "firebase-admin": "^6.5.1",
     "lodash": "^4.17.10",
     "lowdb": "^1.0.0",
     "moment": "^2.22.2",
