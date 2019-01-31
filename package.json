@@ -7,10 +7,11 @@
     "start": "node ./src/app.js",
     "dev": "nodemon ./src/app.js",
     "test": "jest --no-cache --coverage",
-    "test:watch": "jest--no-cache --watch"
+    "test:watch": "jest --no-cache --watch"
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "firebase": "^5.8.0",
     "lodash": "^4.17.10",
     "lowdb": "^1.0.0",
     "moment": "^2.22.2",

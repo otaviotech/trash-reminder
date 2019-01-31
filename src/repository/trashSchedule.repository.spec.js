@@ -6,10 +6,12 @@ describe('TrashScheduleRepository', () => {
   describe('GetLatestRemoval', () => {
     beforeEach(() => {
       trashScheduleRepository = createTrashScheduleRepository(() => Promise.resolve({
-        get: () => ({
-          value: () => ({
+        ref: () => ({
+          once: () => Promise.resolve({
+            val: () => ({
               collaboratorID: 1,
               date: '2019-01-23',
+            }),
           }),
         }),
       }));
@@ -29,8 +31,8 @@ describe('TrashScheduleRepository', () => {
   describe('SetLastRemoval', () => {
     beforeEach(() => {
       trashScheduleRepository = createTrashScheduleRepository(() => Promise.resolve({
-        set: () => ({
-          write: () => Promise.resolve(),
+        ref: () => ({
+          set: () => Promise.resolve(),
         }),
       }));
     });
