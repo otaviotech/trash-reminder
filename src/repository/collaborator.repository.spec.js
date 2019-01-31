@@ -4,14 +4,15 @@ describe('CollaboratorRepository', () => {
   let collaboratorRepository;
 
   describe('Get', () => {
+
     beforeEach(() => {
       collaboratorRepository = createCollaboratorRepository(() => Promise.resolve({
-        get: () => ({
-          find: () => ({
-            value: () => ({
+        ref: () => ({
+          once: () => Promise.resolve({
+            val: () => Promise.resolve({
               id: 4, name: 'Otávio', slackUserID: 'UABE2LK42', message: 'Custom message.',
             }),
-          })
+          }),
         }),
       }));
     });
@@ -32,10 +33,14 @@ describe('CollaboratorRepository', () => {
   describe('GetCollaboratorsCount', () => {
     beforeEach(() => {
       collaboratorRepository = createCollaboratorRepository(() => Promise.resolve({
-        get: () => ({
-          size: () => ({
-            value: () => 6,
-          })
+        ref: () => ({
+          orderByKey: () => ({
+            limitToLast: () => ({
+              once: () => Promise.resolve({
+                val: () => ({ '0': {} }),
+              }),
+            }),
+          }),
         }),
       }));
     });
@@ -44,7 +49,7 @@ describe('CollaboratorRepository', () => {
         collaboratorRepository.getCollaboratorsCount()
           .then((count) => {
             expect(typeof count).toBe('number');
-            expect(count).toBe(6);
+            expect(count).toBe(1);
             done();
           });
     });
