@@ -25,10 +25,14 @@ function createFirebaseDatabaseConnection() {
 }
 
 createFirebaseDatabaseConnection().then((con) => {
-  con.ref('collaborators').orderByKey().limitToLast(1).once('value')
-    .then(v => {
-      console.log(Object.values(v.val())[0])
-      process.exit(0);
+  con.ref('lastRemoval').set({ collaboratorID: 3, date: '2019-01-25' })
+    .then(() => {
+
+      con.ref('lastRemoval').once('value')
+      .then(v => {
+        console.log(v.val());
+        process.exit(0);
+      });
     });
 });
 
