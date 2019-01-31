@@ -1,4 +1,4 @@
-const db = require('./db');
+const db = require('../service/firebase.service');
 
 const createTrashScheduleRepository = function(getDBConnection = db) {
   return {
