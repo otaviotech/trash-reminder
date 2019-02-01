@@ -61,7 +61,12 @@ describe('TrashRemovalService', () => {
     });
   });
 
-  describe('GetRemover', () => {
+  describe('GetRemoverIndexForDate', () => {
+    const friday = '2019-01-18';
+    const wednesdayAfterFriday = '2019-01-23';
+    const holidayBetweenFridayAndWednesday = '2019-01-21';
+    const holidays = [holidayBetweenFridayAndWednesday];
+
     beforeAll(() => {
       trashRemovalService = createTrashRemovalService({
         calendarioService: {
@@ -72,48 +77,31 @@ describe('TrashRemovalService', () => {
         },
         trashScheduleRepository: {
           getLastRemoval: () => Promise.resolve({
-            date: '2019-01-02', collaboratorID: 4,
+            date: friday, collaboratorID: 0,
           }),
         },
-        collaboratorRepository: {
-          get: () => Promise.resolve({ id: 4, name: 'Otávio', slackUserID: 'UABE2LK42', message: 'Custom message' }),
-        },
+        collaboratorRepository: {},
       });
     });
 
-    it('deve resolver e retornar a ultima coleta caso a data seja a mesma da ultima coleta.', (done) => {
-      trashRemovalService.getRemover('2019-01-02')
-        .then((todaysRemover) => {
-          expect(todaysRemover.id).toBe(4);
-          expect(todaysRemover.name).toBe('Otávio');
-          expect(todaysRemover.slackUserID).toBe('UABE2LK42');
-          expect(todaysRemover.message).toBe('Custom message');
-          done();
-        });
-    });
-  });
+    it('deve resolver e retornar a ultima coleta caso a data seja a mesma da ultima coleta.', () => {
+      let result = trashRemovalService.getRemoverIndexForDate(
+        wednesdayAfterFriday, { date: friday, collaboratorID: 2 }, 5, holidays,
+      );
 
-  describe('GetNextRemovingDay', () => {
+      expect(result).toBe(0);
 
-    const calendarioServiceMock = {
-      isHoliday: () => Promise.resolve({
-        result: false,
-        details: undefined,
-      }),
-    };
+      result = trashRemovalService.getRemoverIndexForDate(
+        wednesdayAfterFriday, { date: friday, collaboratorID: 4 }, 5, holidays,
+      );
 
-    beforeAll(() => {
-      trashRemovalService = createTrashRemovalService({
-        calendarioService: calendarioServiceMock,
-        trashScheduleRepository: {
-          getLastRemoval: () => Promise.resolve({
-            date: '2019-01-02', collaboratorID: 4,
-          }),
-        },
-        collaboratorRepository: {
-          get: () => Promise.resolve({ id: 4, name: 'Otávio', slackUserID: 'UABE2LK42', message: 'Custom message' }),
-        },
-      });
+      expect(result).toBe(2);
+
+      result = trashRemovalService.getRemoverIndexForDate(
+        wednesdayAfterFriday, { date: friday, collaboratorID: 0 }, 5, holidays,
+      );
+
+      expect(result).toBe(3);
     });
   });
 });

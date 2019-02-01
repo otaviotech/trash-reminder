@@ -13,7 +13,7 @@ const MOMENT_WEEKDAYS = {
   FRIDAY: 5,
   SATURDAY: 6,
 };
-// module.exports.MOMENT_WEEKDAYS = MOMENT_WEEKDAYS;
+module.exports.MOMENT_WEEKDAYS = MOMENT_WEEKDAYS;
 
 /**
  * Informa se uma data é dia da semana
@@ -28,7 +28,7 @@ function isWeekDay(date) {
 
   return !weekendDays.includes(moment(date).day());
 }
-// module.exports.isWeekDay = isWeekDay;
+module.exports.isWeekDay = isWeekDay;
 
 /**
  * Retorna uma função que verifica se um dia é feriado dada a lista de feriados passada.
@@ -67,6 +67,6 @@ function getWorkingDaysInRange(from, until, holidays) {
  * @return {number}
  */
 function getWorkingDaysCountInRange(from, until, holidays) {
-  return getWorkingDaysInRange(from, until, holidays).length;
+  return getWorkingDaysInRange(from, until, holidays).length - 1;
 }
 module.exports.getWorkingDaysCountInRange = getWorkingDaysCountInRange;

@@ -12,7 +12,7 @@ const createCollaboratorRepository = function(getDBConnection = db) {
         return con.ref(`collaborators/${id}`).once('value')
           .then((snapshot) => {
             const collaborator = {
-              ...snapshot.val()[id],
+              ...snapshot.val(),
               id,
             }
             return Promise.resolve(collaborator);

@@ -22,7 +22,7 @@ const trashRemovalService = createTrashRemovalService();
 server.post('/', (req, res) => {
     const today = moment().format('YYYY-MM-DD');
 
-    return trashRemovalService.getRemover(today)
+    return trashRemovalService.getRemoverForDate(today)
       .then((remover) => {
         let text = remover
           ? trashRemovalService.getRemoveMessage(remover)
