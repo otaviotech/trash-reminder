@@ -32,6 +32,22 @@ function createTrashRemovalService ({
     },
 
     /**
+     * Retorna uma mensagem lembrando quem deve retirar o lixo na data passada.
+     * @param {string} date A data no formato YYYY-MM-DD
+     * @return {Promise<string>}
+     */
+    async getReminderMessageForDate(date) {
+      try {
+        const nextRemover = await this.getRemoverForDate(date);
+        const msg = `Lembrando... quem tira o lixo hoje é... <@${nextRemover.slackUserID}>`;
+        return Promise.resolve(msg);
+      } catch (error) {
+        console.error(error);
+        return Promise.reject(error);
+      }
+    },
+
+    /**
      * Calcula o índice do próximo colaborador na fila.
      * @param {string} date A data no formato YYYY-MM-DD.
      * @param {object} lastRemoval A última coleta.
@@ -71,8 +87,6 @@ function createTrashRemovalService ({
         const collaboratorsCount = await collaboratorRepository.getCollaboratorsCount();
         const nextRemoverID = await this.getRemoverIndexForDate(date, lastRemoval, collaboratorsCount, holidays);
         const nextRemover = await collaboratorRepository.get(nextRemoverID);
-
-        console.log(nextRemover);
 
         return Promise.resolve(nextRemover);
       } catch (error) {
