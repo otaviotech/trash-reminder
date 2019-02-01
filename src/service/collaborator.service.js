@@ -1,22 +1,36 @@
+const moment = require('moment');
+const { bauruIBGECityCode } = require('../constants');
 const createCollaboratorRepository = require('../repository/collaborator.repository');
+const createCalendarioService = require('../service/calendario.service');
+const dateUtils = require('../utils/date.utils');
 
 function createCollaboratorService ({
   collaboratorRepository = createCollaboratorRepository(),
+  calendarioService = createCalendarioService(),
 } = {}) {
   return {
     /**
      * Busca o próximo colaborador na fila.
-     * @param {number} id O id do colaborador atual.
+     * @param {object} lastRemoval A última coleta.
      * @return {Promise<Object>}
      */
-    getNextQueuedCollaborator(currentCollaboratorID) {
+    getNextQueuedCollaborator(lastRemoval) {
+      const currentDate = moment();
       return collaboratorRepository.getCollaboratorsCount()
-        .then((count) => {
-          const currentIsLast = (count === currentCollaboratorID);
+        .then((collaboratorsCount) => {
+          return calendarioService.getHolidays(bauruIBGECityCode, currentDate.year())
+            .then((holidays) => {
+              const workingDaysCountSinceLastRemoval = dateUtils.getWorkingDaysCountInRange(
+                lastRemoval.date, currentDate.format('YYYY-MM-DD'), holidays,
+              );
 
-          const nextID = currentIsLast ? 0 : (currentCollaboratorID + 1);
+              const stepsAhead = workingDaysCountSinceLastRemoval % collaboratorsCount;
+              const parcialNextCollaboratorIndex = stepsAhead + lastRemoval.collaboratorID;
+              const nextCollaboratorIndex = parcialNextCollaboratorIndex % collaboratorsCount;
 
-          return collaboratorRepository.get(nextID);
+              return collaboratorRepository.get(nextCollaboratorIndex);
+            })
+            .catch()
         })
         .catch((err) => {
           console.error(err);

@@ -52,7 +52,7 @@ function createTrashRemovalService ({
                   .catch(err => Promise.reject(err));
               }
 
-              return collaboratorService.getNextQueuedCollaborator(lastRemoval.collaboratorID)
+              return collaboratorService.getNextQueuedCollaborator(lastRemoval)
                 .then((nextQueuedCollaborator) => {
                   // Change, but async, no confirmation needed.
                   trashScheduleRepository.setLastRemoval({
