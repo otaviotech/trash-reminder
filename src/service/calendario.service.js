@@ -1,6 +1,7 @@
 const axios = require('axios');
-const { calendarioAPIBaseURL } = require('../constants');
 const moment = require('moment');
+const config = require('../../config/index');
+const { calendarioAPIBaseURL } = require('../constants');
 
 function createCalendarioService (httpClient = axios) {
   return {
@@ -15,7 +16,7 @@ function createCalendarioService (httpClient = axios) {
         ano: year,
         ibge: ibgeCityCode,
         json: true,
-        token: process.env.CALENDARIO_API_TOKEN,
+        token: config.calendario.apiKey,
       };
 
       return httpClient.get(calendarioAPIBaseURL, { params })

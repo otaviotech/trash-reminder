@@ -11,5 +11,8 @@ module.exports = {
   },
   slack: {
     reminderURL: process.env.slack_reminderURL,
+  },
+  calendario: {
+    apiKey: process.env.calendario_apiKey,
   }
 };
