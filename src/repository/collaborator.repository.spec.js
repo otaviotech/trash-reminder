@@ -9,7 +9,7 @@ describe('CollaboratorRepository', () => {
       collaboratorRepository = createCollaboratorRepository(() => Promise.resolve({
         ref: () => ({
           once: () => Promise.resolve({
-            val: () => Promise.resolve({
+            val: () => ({
               id: 4, name: 'Otávio', slackUserID: 'UABE2LK42', message: 'Custom message.',
             }),
           }),

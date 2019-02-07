@@ -15,7 +15,9 @@
     "lodash": "^4.17.10",
     "lowdb": "^1.0.0",
     "moment": "^2.22.2",
+    "moment-range": "^4.0.1",
     "nodemon": "^1.18.4",
+    "ramda": "^0.26.1",
     "restify": "^7.2.1",
     "restify-cors-middleware": "^1.1.1"
   },
