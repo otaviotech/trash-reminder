@@ -1,15 +1,14 @@
 const moment = require('moment');
+const dateUtils = require('../utils/date.utils');
 const { bauruIBGECityCode } = require('../constants');
 const createCalendarioService = require('./calendario.service');
 const createTrashScheduleRepository = require('../repository/trashSchedule.repository');
 const createCollaboratorRepository = require('../repository/collaborator.repository');
-const createCollaboratorService = require('./collaborator.service');
 
 function createTrashRemovalService ({
   calendarioService = createCalendarioService(),
   trashScheduleRepository = createTrashScheduleRepository(),
   collaboratorRepository = createCollaboratorRepository(),
-  collaboratorService = createCollaboratorService(),
 } = {}) {
   return {
     /**
@@ -33,44 +32,67 @@ function createTrashRemovalService ({
     },
 
     /**
+     * Retorna uma mensagem lembrando quem deve retirar o lixo na data passada.
+     * @param {string} date A data no formato YYYY-MM-DD
+     * @return {Promise<string>}
+     */
+    async getReminderMessageForDate(date) {
+      try {
+        const nextRemover = await this.getRemoverForDate(date);
+        const msg = `Lembrando... quem tira o lixo hoje é... <@${nextRemover.slackUserID}>`;
+        return Promise.resolve(msg);
+      } catch (error) {
+        console.error(error);
+        return Promise.reject(error);
+      }
+    },
+
+    /**
+     * Calcula o índice do próximo colaborador na fila.
+     * @param {string} date A data no formato YYYY-MM-DD.
+     * @param {object} lastRemoval A última coleta.
+     * @param {number} collaboratorsCount A quantidade de pessoas na fila.
+     * @param {Array<string>} holidays Os feriados.
+     * @return {number}
+     */
+    getRemoverIndexForDate(date, lastRemoval, collaboratorsCount, holidays) {
+      const workingDaysCountSinceLastRemoval = dateUtils.getWorkingDaysCountInRange(
+        lastRemoval.date, date, holidays,
+      );
+
+      const stepsAhead = workingDaysCountSinceLastRemoval % collaboratorsCount;
+      const parcialNextCollaboratorIndex = stepsAhead + lastRemoval.collaboratorID;
+      const nextCollaboratorIndex = (parcialNextCollaboratorIndex % collaboratorsCount);
+
+      return nextCollaboratorIndex;
+    },
+
+    /**
      * Informa quem deve retirar o lixo na data passada.
      * @param {string} date A data no formato YYYY-MM-DD
      * @return {Promise<Object>}
      */
-    getRemover(date) {
-      return this.isTrashRemovingDay(date)
-        .then((isTrashRemovingDay) => {
-          if (!isTrashRemovingDay) {
-            return Promise.resolve(undefined);
-          }
+    async getRemoverForDate(date) {
+      const checkingDate = moment(date);
 
-          return trashScheduleRepository.getLastRemoval()
-            .then((lastRemoval) => {
-              if (lastRemoval.date === date) {
-                return collaboratorRepository.get(lastRemoval.collaboratorID)
-                  .then((collaborator) => Promise.resolve(collaborator))
-                  .catch(err => Promise.reject(err));
-              }
+      try {
+        const dateIsTrashRemovingDay = await this.isTrashRemovingDay(date);
 
-              return collaboratorService.getNextQueuedCollaborator(lastRemoval.collaboratorID)
-                .then((nextQueuedCollaborator) => {
-                  // Change, but async, no confirmation needed.
-                  trashScheduleRepository.setLastRemoval({
-                    date,
-                    collaboratorID: nextQueuedCollaborator.id,
-                  }).catch(console.error);
+        if (!dateIsTrashRemovingDay) {
+          return Promise.resolve(undefined);
+        }
 
-                  return nextQueuedCollaborator;
-                })
-                .catch(err => Promise.reject(err));
+        const lastRemoval = await trashScheduleRepository.getLastRemoval();
+        const holidays = await calendarioService.getHolidays(bauruIBGECityCode, checkingDate.year());
+        const collaboratorsCount = await collaboratorRepository.getCollaboratorsCount();
+        const nextRemoverID = await this.getRemoverIndexForDate(date, lastRemoval, collaboratorsCount, holidays);
+        const nextRemover = await collaboratorRepository.get(nextRemoverID);
 
-            })
-            .catch(err => Promise.reject(err));
-        })
-        .catch((err) => {
-          console.error(err);
-          return Promise.reject(err);
-        });
+        return Promise.resolve(nextRemover);
+      } catch (error) {
+        console.error(error);
+        return Promise.reject(error);
+      }
     },
 
     /**
@@ -94,9 +116,14 @@ function createTrashRemovalService ({
 
       let dayStr;
 
-      if (weekDay === 0) dayStr = 'domingo';
-      if (weekDay === 6) dayStr = 'sábado';
-      if (![0, 6].includes(weekDay)) dayStr = 'feriado';
+      if (weekDay === dateUtils.MOMENT_WEEKDAYS.MONDAY)
+        dayStr = 'domingo';
+
+      if (weekDay === dateUtils.MOMENT_WEEKDAYS.SATURDAY)
+        dayStr = 'sábado';
+
+      if (dateUtils.isWeekDay(weekDay))
+        dayStr = 'feriado';
 
       return `Relaxa! Hoje é ${dayStr}!`;
     },

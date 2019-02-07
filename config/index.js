@@ -9,4 +9,7 @@ module.exports = {
     storageBucket: process.env.firebase_storageBucket,
     messagingSenderId: process.env.firebase_messagingSenderId,
   },
+  slack: {
+    reminderURL: process.env.slack_reminderURL,
+  }
 };

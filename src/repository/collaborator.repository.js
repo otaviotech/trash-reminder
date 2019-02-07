@@ -11,9 +11,13 @@ const createCollaboratorRepository = function(getDBConnection = db) {
       return getDBConnection().then((con) => {
         return con.ref(`collaborators/${id}`).once('value')
           .then((snapshot) => {
-            return Promise.resolve(snapshot.val());
+            const collaborator = {
+              ...snapshot.val(),
+              id,
+            }
+            return Promise.resolve(collaborator);
           }).catch((err) => {
-            console.errror(err);
+            console.error(err);
             return Promise.reject(err);
           });
         })
