@@ -1,15 +1,19 @@
 const
     path = require('path')
     fs = require('fs')
+    dotenv = require('dotenv')
     moment = require('moment')
     restify = require('restify')
     corsMiddleware = require('restify-cors-middleware')
     createTrashRemovalService = require('./service/trashRemoval.service');
 
+
+dotenv.config();
+
 const config = require(path.resolve(__dirname, '../config'));
 
 const cors = corsMiddleware({
-    origins: ['*'],
+  origins: ['*'],
 });
 
 const server = restify.createServer();
