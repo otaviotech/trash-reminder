@@ -18,13 +18,13 @@ describe('TrashScheduleRepository', () => {
     });
 
     it('Deve retornar a ultima coleta de lixo.', (done) => {
-        trashScheduleRepository.getLastRemoval()
-          .then((lastSchedule) => {
-            expect(typeof lastSchedule).toBe('object');
-            expect(lastSchedule.collaboratorID).toBe(1);
-            expect(lastSchedule.date).toBe('2019-01-23');
-            done();
-          });
+      trashScheduleRepository.getLastRemoval()
+        .then((lastSchedule) => {
+          expect(typeof lastSchedule).toBe('object');
+          expect(lastSchedule.collaboratorID).toBe(1);
+          expect(lastSchedule.date).toBe('2019-01-23');
+          done();
+        });
     });
   });
 
@@ -38,11 +38,11 @@ describe('TrashScheduleRepository', () => {
     });
 
     it('Deve atualizar a ultima coleta de lixo.', (done) => {
-        trashScheduleRepository.setLastRemoval()
-          .then((result) => {
-            expect(result).toBeTruthy();
-            done();
-          });
+      trashScheduleRepository.setLastRemoval()
+        .then((result) => {
+          expect(result).toBeTruthy();
+          done();
+        });
     });
   });
 });

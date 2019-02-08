@@ -3,7 +3,7 @@ const moment = require('moment');
 const config = require('../../config/index');
 const { calendarioAPIBaseURL } = require('../constants');
 
-function createCalendarioService (httpClient = axios) {
+function createCalendarioService(httpClient = axios) {
   return {
     /**
      * Busca os feriados para um ano.
@@ -28,7 +28,7 @@ function createCalendarioService (httpClient = axios) {
           return Promise.resolve(res.data);
         })
         .catch((err) => {
-          const errMessage = `Erro ao obter feriados. (${err})`
+          const errMessage = `Erro ao obter feriados. (${err})`;
           return Promise.reject(errMessage);
         });
     },
@@ -60,9 +60,7 @@ function createCalendarioService (httpClient = axios) {
       }
 
       const holidays = await this.getHolidays(ibgeCityCode, parsedDate.year())
-        .catch((err) => {
-          return Promise.reject(err);
-        });
+        .catch(err => Promise.reject(err));
 
       const holidayDateEquals = holiday => moment(holiday.date, 'DD/MM/YYYY').isSame(parsedDate);
 

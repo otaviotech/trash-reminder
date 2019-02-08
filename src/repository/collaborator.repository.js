@@ -1,6 +1,6 @@
 const db = require('../service/firebase.service');
 
-const createCollaboratorRepository = function(getDBConnection = db) {
+function createCollaboratorRepository(getDBConnection = db) {
   return {
     /**
      * Busca um colaborador pelo id.
@@ -8,20 +8,18 @@ const createCollaboratorRepository = function(getDBConnection = db) {
      * @return {Promise<Object>}
      */
     get(id) {
-      return getDBConnection().then((con) => {
-        return con.ref(`collaborators/${id}`).once('value')
-          .then((snapshot) => {
-            const collaborator = {
-              ...snapshot.val(),
-              id,
-            }
-            return Promise.resolve(collaborator);
-          }).catch((err) => {
-            console.error(err);
-            return Promise.reject(err);
-          });
-        })
-        .catch(err => Promise.reject(err))
+      return getDBConnection().then(con => con.ref(`collaborators/${id}`).once('value')
+        .then((snapshot) => {
+          const collaborator = {
+            ...snapshot.val(),
+            id,
+          };
+          return Promise.resolve(collaborator);
+        }).catch((err) => {
+          console.error(err);
+          return Promise.reject(err);
+        }))
+        .catch(err => Promise.reject(err));
     },
 
     /**
@@ -30,20 +28,18 @@ const createCollaboratorRepository = function(getDBConnection = db) {
      */
     getCollaboratorsCount() {
       return getDBConnection()
-        .then((con) => {
-          return con.ref('collaborators').orderByKey().limitToLast(1).once('value')
-            .then((snapshot) => {
-              const rawLastCollaboratorKey = Object.keys(snapshot.val())[0];
-              const parsedLastCollaboratorKey = Number.parseInt(rawLastCollaboratorKey);
-              const count = parsedLastCollaboratorKey + 1;
-              return Promise.resolve(count);
-            })
-            .catch((err) => {
-              console.error(err);
-              return Promise.reject(err);
-            });
-        })
-        .catch(err => Promise.reject(err))
+        .then(con => con.ref('collaborators').orderByKey().limitToLast(1).once('value')
+          .then((snapshot) => {
+            const rawLastCollaboratorKey = Object.keys(snapshot.val())[0];
+            const parsedLastCollaboratorKey = Number.parseInt(rawLastCollaboratorKey, 10);
+            const count = parsedLastCollaboratorKey + 1;
+            return Promise.resolve(count);
+          })
+          .catch((err) => {
+            console.error(err);
+            return Promise.reject(err);
+          }))
+        .catch(err => Promise.reject(err));
     },
   };
 }

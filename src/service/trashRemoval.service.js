@@ -5,7 +5,7 @@ const createCalendarioService = require('./calendario.service');
 const createTrashScheduleRepository = require('../repository/trashSchedule.repository');
 const createCollaboratorRepository = require('../repository/collaborator.repository');
 
-function createTrashRemovalService ({
+function createTrashRemovalService({
   calendarioService = createCalendarioService(),
   trashScheduleRepository = createTrashScheduleRepository(),
   collaboratorRepository = createCollaboratorRepository(),
@@ -19,12 +19,12 @@ function createTrashRemovalService ({
     isTrashRemovingDay(date) {
       const weekDay = moment(date).day();
 
-      if ([0,6].includes(weekDay)) {
+      if ([0, 6].includes(weekDay)) {
         return Promise.resolve(false);
       }
 
       return calendarioService.isHoliday(date, bauruIBGECityCode)
-        .then((isHoliday) => Promise.resolve(!isHoliday.result))
+        .then(isHoliday => Promise.resolve(!isHoliday.result))
         .catch((err) => {
           console.error(err);
           return Promise.reject(err);
@@ -83,9 +83,9 @@ function createTrashRemovalService ({
         }
 
         const lastRemoval = await trashScheduleRepository.getLastRemoval();
-        const holidays = await calendarioService.getHolidays(bauruIBGECityCode, checkingDate.year());
+        const holidays = await calendarioService.getHolidays(bauruIBGECityCode, checkingDate.year()); // eslint-disable-line max-len
         const collaboratorsCount = await collaboratorRepository.getCollaboratorsCount();
-        const nextRemoverID = await this.getRemoverIndexForDate(date, lastRemoval, collaboratorsCount, holidays);
+        const nextRemoverID = await this.getRemoverIndexForDate(date, lastRemoval, collaboratorsCount, holidays); // eslint-disable-line max-len
         const nextRemover = await collaboratorRepository.get(nextRemoverID);
 
         return Promise.resolve(nextRemover);
@@ -116,18 +116,15 @@ function createTrashRemovalService ({
 
       let dayStr;
 
-      if (weekDay === dateUtils.MOMENT_WEEKDAYS.MONDAY)
-        dayStr = 'domingo';
+      if (weekDay === dateUtils.MOMENT_WEEKDAYS.MONDAY) dayStr = 'domingo';
 
-      if (weekDay === dateUtils.MOMENT_WEEKDAYS.SATURDAY)
-        dayStr = 'sábado';
+      if (weekDay === dateUtils.MOMENT_WEEKDAYS.SATURDAY) dayStr = 'sábado';
 
-      if (dateUtils.isWeekDay(weekDay))
-        dayStr = 'feriado';
+      if (dateUtils.isWeekDay(weekDay)) dayStr = 'feriado';
 
       return `Relaxa! Hoje é ${dayStr}!`;
     },
   };
-};
+}
 
 module.exports = createTrashRemovalService;

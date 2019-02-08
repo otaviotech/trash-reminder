@@ -7,7 +7,9 @@
     "start": "node ./src/app.js",
     "dev": "nodemon ./src/app.js",
     "test": "jest --no-cache --coverage",
-    "test:watch": "jest --no-cache --watch"
+    "test:watch": "jest --no-cache --watch",
+    "lint": "eslint config/**/*.js src/**/*.js *.js",
+    "lint:fix": "yarn run lint --fix"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -24,6 +26,9 @@
   },
   "devDependencies": {
     "@types/jest": "^23.3.2",
+    "eslint": "^5.13.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
     "jest": "^23.6.0",
     "supertest": "^3.4.2"
   }

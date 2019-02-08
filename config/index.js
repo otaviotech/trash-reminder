@@ -1,3 +1,5 @@
+const dotenv = require('dotenv');
+
 const isProduction = process.env.NODE_ENV === 'production';
 
 if (!isProduction) {
@@ -20,5 +22,5 @@ module.exports = {
   },
   calendario: {
     apiKey: process.env.CALENDARIO_API_KEY,
-  }
+  },
 };

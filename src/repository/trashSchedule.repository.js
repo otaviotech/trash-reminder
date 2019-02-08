@@ -1,6 +1,6 @@
 const db = require('../service/firebase.service');
 
-const createTrashScheduleRepository = function(getDBConnection = db) {
+function createTrashScheduleRepository(getDBConnection = db) {
   return {
     /**
      * Busca a ultima coleta de lixo.
@@ -8,17 +8,15 @@ const createTrashScheduleRepository = function(getDBConnection = db) {
      */
     getLastRemoval() {
       return getDBConnection()
-        .then((con) => {
-          return con.ref('lastRemoval').once('value')
-            .then((snapshot) => {
-              const lastRemoval = snapshot.val();
-              return Promise.resolve(lastRemoval);
-            })
-            .catch((err) => {
-              console.error(err)
-              return Promise.reject('Erro ao obter última coleta.');
-            });
-        })
+        .then(con => con.ref('lastRemoval').once('value')
+          .then((snapshot) => {
+            const lastRemoval = snapshot.val();
+            return Promise.resolve(lastRemoval);
+          })
+          .catch((err) => {
+            console.error(err);
+            return Promise.reject('Erro ao obter última coleta.');
+          }))
         .catch(err => Promise.reject(err));
     },
 
@@ -28,12 +26,10 @@ const createTrashScheduleRepository = function(getDBConnection = db) {
      */
     setLastRemoval(lastRemoval) {
       return getDBConnection()
-        .then((con) => {
-          return con.ref('lastRemoval').set(lastRemoval)
-            .then(() => Promise.resolve(true))
-            .catch(() => Promise.reject(false));
-        })
-        .catch(err => Promise.reject(err))
+        .then(con => con.ref('lastRemoval').set(lastRemoval)
+          .then(() => Promise.resolve(true))
+          .catch(() => Promise.reject(false)))
+        .catch(err => Promise.reject(err));
     },
   };
 }

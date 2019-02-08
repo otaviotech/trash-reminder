@@ -7,9 +7,7 @@ function createFirebaseDatabaseConnection() {
     : firebase.app();
 
   return firebaseApp.auth().signInAnonymously()
-    .then(() => {
-      return Promise.resolve(firebaseApp.database());
-    })
+    .then(() => Promise.resolve(firebaseApp.database()))
     .catch((err) => {
       console.error(err);
       return Promise.reject('Erro ao conectar com Firebase.');
